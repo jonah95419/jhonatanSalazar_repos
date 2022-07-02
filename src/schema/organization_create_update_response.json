@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "OrganizationCreateUpdateResponse",
+  "type": "object",
+  "definitions": {
+    "organization": {
+      "properties": {
+        "id_organization": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "data": {
+      "$ref": "#/definitions/organization"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ok"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "additionalProperties": false,
+    "title": "TribuModel",
+    "type": "object",
+    "properties": {
+        "id_tribu": {
+            "type": "number"
+        },
+        "id_organization": {
+            "type": "number"
+        },
+        "name": {
+            "type": "string"
+        },
+        "status": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "id_tribu",
+        "id_organization",
+        "name",
+        "status"
+    ]
+}

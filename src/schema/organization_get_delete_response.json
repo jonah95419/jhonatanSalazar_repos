@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "OrganizationGetDeleteResponse",
+  "type": "object",
+  "definitions": {
+    "organization": {
+      "properties": {
+        "id_organization": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "data": {
+      "items": {
+        "$ref": "#/definitions/organization"
+      },
+      "type": "array"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "count": {
+      "type": "number"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ok"
+  ]
+}

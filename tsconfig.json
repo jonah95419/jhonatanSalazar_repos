@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es2016",                                  
+    "module": "commonjs",                                
+    "esModuleInterop": true,                             
+    "forceConsistentCasingInFileNames": true,            
+    "strict": true,                                      
+    "skipLibCheck": true,
+    "paths": {
+      "config/*": ["./src/config/*"],
+      "constant/*": ["./src/constant/*"],
+      "gateway/*": ["./src/gateway/*"],
+      "infrastructure/*": ["./src/infrastructure/*"],
+      "repository/*": ["./src/repository/*"],
+      "service/*": ["./src/service/*"],
+      "routes/*": ["./src/routes/*"],
+      "types/*": ["./types/*"],
+    },
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+  },
+  "exclude": ["node_modules"],
+}

@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "MetricsModel",
+    "additionalProperties": false,
+    "properties": {
+        "id_repository": {
+            "type": "number"
+        },
+        "coverage": {
+            "type": "number"
+        },
+        "bugs": {
+            "type": "number"
+        },
+        "vulnerabilities": {
+            "type": "number"
+        },
+        "hotspot": {
+            "type": "number"
+        },
+        "code_smells": {
+            "type": "number"
+        }
+    },
+    "required": [
+        "id_repository",
+        "coverage",
+        "bugs",
+        "vulnerabilities",
+        "hotspot",
+        "code_smells"
+    ]
+}

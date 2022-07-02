@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "RepositoryModel",
+    "additionalProperties": false,
+    "properties": {
+        "id_repository": {
+            "type": "number"
+        },
+        "id_tribu": {
+            "type": "number"
+        },
+        "name": {
+            "type": "string"
+        },
+        "state": {
+            "type": "string"
+        },
+        "create_time": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "id_repository",
+        "id_tribu",
+        "name",
+        "state",
+        "create_time",
+        "status"
+    ]
+}

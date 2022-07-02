@@ -1,0 +1,21 @@
+{
+  "title": "OrganizationUpdateRequest",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "status"
+  ]
+}

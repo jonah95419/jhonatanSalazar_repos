@@ -1,0 +1,13 @@
+{
+  "title": "OrganizationDeleteRequest",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "id"
+  ]
+}
