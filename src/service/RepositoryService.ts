@@ -1,10 +1,13 @@
 import { Repository } from "typeorm";
-import { get, has, isEqual, isNull } from "lodash";
+import { defaultTo, get, has, isEqual, isNull } from "lodash";
 
 import { AppDataSource } from "../config/data-source";
 import { IRepositoryService } from "repository/IRepositoryService";
 
-import { generateMessageError } from "../utils/CommonFunctions";
+import {
+  callMockService,
+  generateMessageError,
+} from "../utils/CommonFunctions";
 import { Repository as RepositoryEntity } from "../entities/repository.entity";
 import { TribeService } from "./TribeService";
 
@@ -19,8 +22,11 @@ import { RepositoryComplete } from "types/repository_complete";
 import { Tribe } from "../entities/tribe.entity";
 import {
   RepositoryEnum,
+  RepositoryStateEnum,
+  RepositoryStateValueEnum,
   RepositoryValueEnum,
 } from "../constant/RepositoryEnums";
+import { MockResponse, State } from "types/mock_response";
 
 /**
  * RepositoryService Implementation
@@ -70,8 +76,14 @@ export class RepositoryService implements IRepositoryService {
 
       if (!validateCoverage) throw new Error(MessageValues.COVERAGE_MINIMUM);
 
+      const mockService: MockResponse = await callMockService();
+      const response_data: object = this._validateStateRepository(
+        data,
+        mockService
+      );
+
       return {
-        data: this._validateStateRepository(data),
+        data: response_data,
         count: 0,
         ok: true,
       };
@@ -152,14 +164,17 @@ export class RepositoryService implements IRepositoryService {
   }
 
   private _validateStateRepository(
-    data: RepositoryEntity[]
+    data: RepositoryEntity[],
+    mockService: MockResponse
   ): RepositoryComplete[] {
     return data
       .map((repository: AllRepository) => <RepositoryComplete>repository)
       .filter((repository: RepositoryComplete) =>
         this._conditionStateRepository(repository)
       )
-      .map(this._mapRepositoryValues);
+      .map((repository: RepositoryComplete) =>
+        this._mapRepositoryValues(repository, mockService)
+      );
   }
 
   private _conditionStateRepository(repository: RepositoryComplete): boolean {
@@ -174,9 +189,17 @@ export class RepositoryService implements IRepositoryService {
     );
   }
 
-  private _mapRepositoryValues(repository: RepositoryComplete): object {
+  private _mapRepositoryValues(
+    repository: RepositoryComplete,
+    mockService: MockResponse
+  ): object {
+    const id: number = Number(get(repository, "id_repository", 0));
+    const stateValue: RepositoryStateEnum = <RepositoryStateEnum>(
+      mockService.repositories?.find((state: State) => state.id === id)?.state
+    );
+
     return {
-      id: get(repository, "id_repository", ""),
+      id,
       name: get(repository, "name", ""),
       tribe: get(repository, "tribe.name", ""),
       organization: get(repository, "tribe.organization.name", ""),
@@ -185,7 +208,7 @@ export class RepositoryService implements IRepositoryService {
       bugs: Number(get(repository, "metrics.bugs", 0)),
       vulnerabilities: Number(get(repository, "metrics.vulnerabilities", 0)),
       hotspots: Number(get(repository, "metrics.hotspots", 0)),
-      verificationState: "En espera",
+      verificationState: RepositoryStateValueEnum[stateValue],
       state: RepositoryValueEnum[RepositoryEnum.enable],
     };
   }

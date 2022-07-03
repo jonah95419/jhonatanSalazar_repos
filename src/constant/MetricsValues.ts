@@ -1,3 +1,3 @@
 export const MetricsValues = {
-    COVERAGE_MINIMUM: 70
+    COVERAGE_MINIMUM: 75
 }

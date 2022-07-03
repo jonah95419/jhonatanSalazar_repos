@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "MockResponse",
+  "type": "object",
+  "definitions": {
+    "state": {
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "state": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "state"
+      ]
+    }
+  },
+  "properties": {
+    "repositories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/state"
+      }
+    }
+  },
+  "additionalProperties": false
+}
