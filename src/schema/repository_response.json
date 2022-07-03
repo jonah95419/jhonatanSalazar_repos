@@ -3,6 +3,44 @@
   "title": "RepositoryResponse",
   "type": "object",
   "definitions": {
+    "reportRepository": {
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tribe": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "coverage": {
+          "type": "string"
+        },
+        "codeSmells": {
+          "type": "number"
+        },
+        "bugs": {
+          "type": "number"
+        },
+        "vulnerabilities": {
+          "type": "number"
+        },
+        "hotspots": {
+          "type": "number"
+        },
+        "verificationState": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "repository": {
       "properties": {
         "id_repository": {
@@ -30,6 +68,9 @@
       "oneOf": [
         {
           "$ref": "#/definitions/repository"
+        },
+        {
+          "$ref": "#/definitions/reportRepository"
         },
         {
           "items": {

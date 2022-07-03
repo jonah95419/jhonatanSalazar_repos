@@ -18,14 +18,21 @@ export interface IRepositoryService {
   /**
    * @description Create a Repository Item
    * @param repository new item, ommit id_tribu
-   * @returns a boolean indicated the status
+   * @returns item created
    */
   createRepository(repository: Repository): Promise<RepositoryResponse>;
 
   /**
    * @description Update a Repository Item
    * @param repository item to update
-   * @returns a boolean indicated the status
+   * @returns item updated
    */
   updateRepository(repository: Repository): Promise<RepositoryResponse>;
+
+  /**
+   * @description Generate file CSV
+   * @param id_tribe id Tribe to generate report
+   * @returns report to Repository
+   */
+  reportRepositoryFile(id_tribe: number): Promise<object>;
 }

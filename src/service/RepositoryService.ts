@@ -1,5 +1,6 @@
 import { Repository } from "typeorm";
-import { defaultTo, get, has, isEqual, isNull } from "lodash";
+import { get, has, isEqual, isNull } from "lodash";
+import { parseAsync } from "json2csv";
 
 import { AppDataSource } from "../config/data-source";
 import { IRepositoryService } from "repository/IRepositoryService";
@@ -16,6 +17,7 @@ import { MessageValues } from "../constant/MessagesValues";
 import {
   RepositoryResponse,
   Repository as AllRepository,
+  ReportRepository,
 } from "types/repository_response";
 import { TribeResponse } from "types/tribe_response";
 import { RepositoryComplete } from "types/repository_complete";
@@ -27,6 +29,7 @@ import {
   RepositoryValueEnum,
 } from "../constant/RepositoryEnums";
 import { MockResponse, State } from "types/mock_response";
+import { RETENTION_CSV_FILE_COLUMNS_EMAIL } from "../constant/FileColumnsValues";
 
 /**
  * RepositoryService Implementation
@@ -72,14 +75,14 @@ export class RepositoryService implements IRepositoryService {
       const data: RepositoryEntity[] = await this._storage.find({
         where: { tribe: { id_tribe } },
       });
-      const validateCoverage: boolean = this._validateCoverageRepository(data);
+      const validate_coverage: boolean = this._validateCoverageRepository(data);
 
-      if (!validateCoverage) throw new Error(MessageValues.COVERAGE_MINIMUM);
+      if (!validate_coverage) throw new Error(MessageValues.COVERAGE_MINIMUM);
 
-      const mockService: MockResponse = await callMockService();
-      const response_data: object = this._validateStateRepository(
+      const mock_service: MockResponse = await callMockService();
+      const response_data: ReportRepository[] = this._validateStateRepository(
         data,
-        mockService
+        mock_service
       );
 
       return {
@@ -152,6 +155,33 @@ export class RepositoryService implements IRepositoryService {
     }
   };
 
+  reportRepositoryFile = async (id_tribe: number): Promise<object> => {
+    try {
+      const response_report: RepositoryResponse = await this.getAllRepositories(
+        id_tribe
+      );
+
+      if (!response_report.ok) throw new Error(MessageValues.REPORT_EMPTY);
+
+      const report_data: ReportRepository[] = <ReportRepository[]>(
+        response_report.data
+      );
+
+      const csv: string = await parseAsync(report_data, {
+        delimiter: "|",
+        fields: RETENTION_CSV_FILE_COLUMNS_EMAIL,
+        quote: "",
+      });
+
+      return {
+        data: Buffer.from(csv),
+        ok: true,
+      };
+    } catch (error) {
+      return generateMessageError(error);
+    }
+  };
+
   private _validateCoverageRepository(data: RepositoryEntity[]): boolean {
     return data
       .map((repository: AllRepository) => <RepositoryComplete>repository)
@@ -166,7 +196,7 @@ export class RepositoryService implements IRepositoryService {
   private _validateStateRepository(
     data: RepositoryEntity[],
     mockService: MockResponse
-  ): RepositoryComplete[] {
+  ): ReportRepository[] {
     return data
       .map((repository: AllRepository) => <RepositoryComplete>repository)
       .filter((repository: RepositoryComplete) =>
@@ -192,9 +222,9 @@ export class RepositoryService implements IRepositoryService {
   private _mapRepositoryValues(
     repository: RepositoryComplete,
     mockService: MockResponse
-  ): object {
+  ): ReportRepository {
     const id: number = Number(get(repository, "id_repository", 0));
-    const stateValue: RepositoryStateEnum = <RepositoryStateEnum>(
+    const state_value: RepositoryStateEnum = <RepositoryStateEnum>(
       mockService.repositories?.find((state: State) => state.id === id)?.state
     );
 
@@ -208,7 +238,7 @@ export class RepositoryService implements IRepositoryService {
       bugs: Number(get(repository, "metrics.bugs", 0)),
       vulnerabilities: Number(get(repository, "metrics.vulnerabilities", 0)),
       hotspots: Number(get(repository, "metrics.hotspots", 0)),
-      verificationState: RepositoryStateValueEnum[stateValue],
+      verificationState: RepositoryStateValueEnum[state_value],
       state: RepositoryValueEnum[RepositoryEnum.enable],
     };
   }

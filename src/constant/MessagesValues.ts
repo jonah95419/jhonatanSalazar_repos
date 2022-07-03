@@ -8,4 +8,5 @@ export const MessageValues = {
     DELETE_SUCCESSFUL: "Registro eliminado correctamente.",
     UPDATE_SUCCESSFUL: "Registro actualizado correctamente.",
     COVERAGE_MINIMUM: "La Tribu no tiene repositorios que cumplan con la cobertura necesaria",
+    REPORT_EMPTY: "La Tribu no tiene repositorios para generar el reporte.",
 }
