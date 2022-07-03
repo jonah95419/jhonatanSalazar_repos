@@ -37,7 +37,7 @@ router.delete(
       path: SchemaEnum.organization_delete_request,
     }),
   async (req: Request, res: Response) => 
-    res.send(await new OrganizationService().deleteOrganization(req.body.id))
+    res.send(await new OrganizationService().deleteOrganization(req.body.id_organization))
 );
 
 export default router;

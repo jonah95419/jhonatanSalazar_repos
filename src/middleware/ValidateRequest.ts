@@ -13,7 +13,7 @@ export default async function (
 
   const reqValue: object = !isEmpty(get(params, "body", ""))
     ? req.body
-    : { id: Number(req.path.split("/")[1]) };
+    : { id_organization: Number(req.path.split("/")[1]) };
   const paramsValues: string = !isEmpty(get(params, "body", ""))
     ? params!.body!
     : params!.path!;

@@ -6,7 +6,7 @@
   "scripts": {
     "tsc:interface": "tsc ./json2ts.ts --outDir types && node types/json2ts.js",
     "build": "npx tsc",
-    "dev": "concurrently \"npx tsc --watch --experimentalDecorators\" \"nodemon -q dist/src/index.js\"",
+    "dev": "concurrently \"npx tsc --watch --experimentalDecorators --emitDecoratorMetadata\" \"nodemon -q dist/src/index.js\"",
     "run-dev": "npm run build && npm run dev"
   },
   "repository": {

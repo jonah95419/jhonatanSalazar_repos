@@ -49,7 +49,7 @@ export class OrganizationService implements IOrganizationService {
   ): Promise<OrganizationCreateUpdateResponse> => {
     try {
       const organizationToUpdate: Organization =
-        await this._validateExistOrganization(organization.id);
+        await this._validateExistOrganization(organization.id_organization);
 
       organizationToUpdate.name = organization.name;
       organizationToUpdate.status = organization.status;
@@ -108,7 +108,7 @@ export class OrganizationService implements IOrganizationService {
   private async _validateExistOrganization(id: number): Promise<Organization> {
     const organizationToUpdate: Organization | null =
       await this.storage.findOneBy({
-        id,
+        id_organization: id,
       });
 
     if (isNull(organizationToUpdate))

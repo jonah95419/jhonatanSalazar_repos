@@ -2,12 +2,12 @@
   "title": "OrganizationDeleteRequest",
   "type": "object",
   "properties": {
-    "id": {
+    "id_organization": {
       "type": "number"
     }
   },
   "additionalProperties": false,
   "required": [
-    "id"
+    "id_organization"
   ]
 }

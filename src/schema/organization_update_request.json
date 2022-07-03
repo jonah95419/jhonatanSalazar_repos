@@ -2,7 +2,7 @@
   "title": "OrganizationUpdateRequest",
   "type": "object",
   "properties": {
-    "id": {
+    "id_organization": {
       "type": "number"
     },
     "name": {
@@ -14,7 +14,7 @@
   },
   "additionalProperties": false,
   "required": [
-    "id",
+    "id_organization",
     "name",
     "status"
   ]
