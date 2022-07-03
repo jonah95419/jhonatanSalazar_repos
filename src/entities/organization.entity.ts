@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Tribe } from "./tribe.entity";
 
 @Entity("Organization")
 export class Organization {
@@ -13,4 +14,7 @@ export class Organization {
 
   @Column({ type: "integer" })
   "status": number;
+
+  @OneToMany(() => Tribe, (tribe) => tribe.organization )
+  "tribu": Tribe[]
 }

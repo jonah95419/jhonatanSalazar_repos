@@ -1,4 +1,5 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Metrics } from "./metrics.entity";
 import { Tribe } from "./tribe.entity";
 
 @Entity("Repository")
@@ -7,9 +8,12 @@ export class Repository {
   @PrimaryGeneratedColumn("increment")
   "id_repository": number;
 
-  @ManyToOne(() => Tribe , { cascade: true, nullable: false })
+  @ManyToOne(() => Tribe , { eager: true, nullable: false })
   @JoinColumn({name: 'id_tribe'})
   "tribe": Tribe
+
+  @OneToOne(() => Metrics, (metrics) => metrics.repository,  { eager: true })
+  "metrics": Metrics[]
 
   @Column({
     length: 50,
@@ -26,7 +30,7 @@ export class Repository {
   @Column({
     type: "timestamp",
   })
-  "create_time": string;
+  "create_time": Date;
 
   @Column({
     length: 1,

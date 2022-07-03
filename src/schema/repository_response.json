@@ -1,18 +1,25 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "title": "OrganizationGetDeleteResponse",
+  "title": "RepositoryResponse",
   "type": "object",
   "definitions": {
-    "organization": {
+    "repository": {
       "properties": {
-        "id_organization": {
+        "id_repository": {
+          "type": "number"
+        },
+        "id_tribe": {
           "type": "number"
         },
         "name": {
           "type": "string"
         },
+        "create_time": {},
+        "state": {
+          "type": "string"
+        },
         "status": {
-          "type": "number"
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -20,10 +27,17 @@
   },
   "properties": {
     "data": {
-      "items": {
-        "$ref": "#/definitions/organization"
-      },
-      "type": "array"
+      "oneOf": [
+        {
+          "$ref": "#/definitions/repository"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/repository"
+          },
+          "type": "array"
+        }
+      ]
     },
     "ok": {
       "type": "boolean"
@@ -36,7 +50,5 @@
     }
   },
   "additionalProperties": false,
-  "required": [
-    "ok"
-  ]
+  "required": ["ok"]
 }

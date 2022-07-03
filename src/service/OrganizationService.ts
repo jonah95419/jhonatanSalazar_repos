@@ -1,36 +1,35 @@
 import { Repository } from "typeorm";
-import { get, isNull } from "lodash";
 
 import { AppDataSource } from "../config/data-source";
 import { IOrganizationService } from "repository/IOrganizationService";
 
 import { MessageEnum } from "../constant/MessageEnum";
-import { ErrorMessageEnum, ErrorTypeEnum } from "../constant/ErrorEnum";
+import { ErrorTypeEnum } from "../constant/ErrorEnum";
 import { Organization } from "../entities/organization.entity";
 import { OrganizationCreateRequest } from "types/organization_create_request";
-import { OrganizationGetDeleteResponse } from "types/organization_get_delete_response";
-import { OrganizationCreateUpdateResponse } from "types/organization_create_update_response";
+import { generateMessageError, validateItem } from "../utils/CommonFunctions";
+import { OrganizationResponse } from "types/organization_response";
 
 /**
  * OrganizationService Implementation
  */
 export class OrganizationService implements IOrganizationService {
-  private readonly storage: Repository<Organization>;
+  private readonly _storage: Repository<Organization>;
 
   constructor() {
-    this.storage = AppDataSource.getRepository(Organization);
+    this._storage = AppDataSource.getRepository(Organization);
   }
 
   createOrganization = async (
     organization: OrganizationCreateRequest
-  ): Promise<OrganizationCreateUpdateResponse> => {
+  ): Promise<OrganizationResponse> => {
     try {
       const organizationToSave: Organization = new Organization();
 
       organizationToSave.name = organization.name;
       organizationToSave.status = organization.status;
 
-      const data = await this.storage.save(organizationToSave);
+      const data = await this._storage.save(organizationToSave);
 
       return {
         data,
@@ -38,23 +37,25 @@ export class OrganizationService implements IOrganizationService {
         ok: true,
       };
     } catch (error: unknown) {
-      return this._generateMessageError<OrganizationCreateUpdateResponse>(
-        error
-      );
+      return generateMessageError<OrganizationResponse>(error);
     }
   };
 
   updateOrganization = async (
     organization: Organization
-  ): Promise<OrganizationCreateUpdateResponse> => {
+  ): Promise<OrganizationResponse> => {
     try {
       const organizationToUpdate: Organization =
-        await this._validateExistOrganization(organization.id_organization);
+        await validateItem<Organization>(
+          { id_organization: organization.id_organization },
+          this._storage,
+          ErrorTypeEnum.organization404
+        );
 
       organizationToUpdate.name = organization.name;
       organizationToUpdate.status = organization.status;
 
-      const data = await this.storage.save(organizationToUpdate!);
+      const data = await this._storage.save(organizationToUpdate!);
 
       return {
         data,
@@ -62,16 +63,14 @@ export class OrganizationService implements IOrganizationService {
         ok: true,
       };
     } catch (error: unknown) {
-      return this._generateMessageError<OrganizationCreateUpdateResponse>(
-        error
-      );
+      return generateMessageError<OrganizationResponse>(error);
     }
   };
 
-  getOrganizations = async (): Promise<OrganizationGetDeleteResponse> => {
+  getAllOrganizations = async (): Promise<OrganizationResponse> => {
     try {
       const [data, count]: [Organization[], number] =
-        await this.storage.findAndCount();
+        await this._storage.findAndCount();
 
       return {
         data,
@@ -79,20 +78,41 @@ export class OrganizationService implements IOrganizationService {
         ok: true,
       };
     } catch (error) {
-      return this._generateMessageError<OrganizationGetDeleteResponse>(error);
+      return generateMessageError<OrganizationResponse>(error);
+    }
+  };
+
+  getItemOrganization = async (
+    id_organization: number
+  ): Promise<OrganizationResponse> => {
+    try {
+      const data: Organization = await validateItem<Organization>(
+        { id_organization },
+        this._storage,
+        ErrorTypeEnum.organization404
+      );
+
+      return {
+        data,
+        ok: true,
+      };
+    } catch (error: unknown) {
+      return generateMessageError<OrganizationResponse>(error);
     }
   };
 
   deleteOrganization = async (
-    id: number
-  ): Promise<OrganizationGetDeleteResponse> => {
+    id_organization: number
+  ): Promise<OrganizationResponse> => {
     try {
-      const organization: Organization = await this._validateExistOrganization(
-        id
+      const organization: Organization = await validateItem<Organization>(
+        { id_organization },
+        this._storage,
+        ErrorTypeEnum.organization404
       );
-      await this.storage.remove(organization!);
+      await this._storage.remove(organization!);
       const [data, count]: [Organization[], number] =
-        await this.storage.findAndCount();
+        await this._storage.findAndCount();
 
       return {
         data,
@@ -101,26 +121,7 @@ export class OrganizationService implements IOrganizationService {
         ok: true,
       };
     } catch (error) {
-      return this._generateMessageError<OrganizationGetDeleteResponse>(error);
+      return generateMessageError<OrganizationResponse>(error);
     }
   };
-
-  private async _validateExistOrganization(id: number): Promise<Organization> {
-    const organizationToUpdate: Organization | null =
-      await this.storage.findOneBy({
-        id_organization: id,
-      });
-
-    if (isNull(organizationToUpdate))
-      throw new Error(ErrorMessageEnum[ErrorTypeEnum.error404]);
-
-    return organizationToUpdate;
-  }
-
-  private _generateMessageError<T extends object>(error: unknown): T {
-    return <T>{
-      ok: false,
-      message: get(error, "message", ""),
-    };
-  }
 }

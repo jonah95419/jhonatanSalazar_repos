@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "title": "OrganizationCreateUpdateResponse",
+  "title": "OrganizationResponse",
   "type": "object",
   "definitions": {
     "organization": {
@@ -20,10 +20,23 @@
   },
   "properties": {
     "data": {
-      "$ref": "#/definitions/organization"
+      "oneOf":[
+        {
+          "$ref": "#/definitions/organization"
+        },
+        {
+          "items": {
+            "$ref": "#/definitions/organization"
+          },
+          "type": "array"
+        }
+      ]
     },
     "ok": {
       "type": "boolean"
+    },
+    "count": {
+      "type": "number"
     },
     "message": {
       "type": "string"

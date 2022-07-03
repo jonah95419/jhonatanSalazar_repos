@@ -1,7 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema",
-    "title": "MetricsModel",
     "additionalProperties": false,
+    "title": "MetricsCreateRequest",
+    "type": "object",
     "properties": {
         "id_repository": {
             "type": "number"

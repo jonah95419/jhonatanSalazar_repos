@@ -1,33 +1,28 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema",
-    "title": "RepositoryModel",
+    "title": "RepositoryCreateRequest",
     "additionalProperties": false,
     "properties": {
-        "id_repository": {
-            "type": "number"
-        },
-        "id_tribu": {
+        "id_tribe": {
             "type": "number"
         },
         "name": {
             "type": "string"
         },
         "state": {
-            "type": "string"
-        },
-        "create_time": {
+            "enum": ["E", "D", "A"],
             "type": "string"
         },
         "status": {
+            "enum": ["I", "A"],
             "type": "string"
         }
     },
     "required": [
         "id_repository",
-        "id_tribu",
+        "id_tribe",
         "name",
         "state",
-        "create_time",
         "status"
     ]
 }

@@ -15,10 +15,17 @@ export async function validateAttr(body: any, schemaName: string) {
 
   if (!isEqual(sortBy(attNamesBody), sortBy(attNamesSchema))) return false;
 
-  const attTypeValue: boolean = attNamesBody.some(
-    (nameAtt: string) =>
-      typeof body[nameAtt] !== schema.properties[nameAtt]["type"]
-  );
+  const attTypeValue: boolean = attNamesBody.some((nameAtt: string) => {
+    const existEnum: boolean = Object.keys(schema.properties[nameAtt]).some(
+      (nameEnum: string) => nameEnum === "enum"
+    );
+    const typeValue: boolean = typeof body[nameAtt] !== schema.properties[nameAtt]["type"];
+
+    if(!existEnum) 
+      return typeValue;
+
+    return typeValue == schema.properties[nameAtt]["enum"].includes(body[nameAtt]);
+  });
 
   return !attTypeValue;
 }

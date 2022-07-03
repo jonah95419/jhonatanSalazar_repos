@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "TribeResponse",
+  "type": "object",
+  "definitions": {
+    "tribe": {
+      "properties": {
+        "id_tribe": {
+          "type": "number"
+        },
+        "id_organization": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id_tribe",
+        "name",
+        "status"
+      ]
+    }
+  },
+  "properties": {
+    "data": {
+      "oneOf":[
+        {
+          "$ref": "#/definitions/tribe"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tribe"
+          }
+        }
+      ]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ok"
+  ]
+}

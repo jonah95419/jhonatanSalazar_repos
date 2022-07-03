@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "MetricsResponse",
+  "type": "object",
+  "definitions": {
+    "metrics": {
+      "properties": {
+        "id_repository": {
+          "type": "number"
+        },
+        "coverage": {
+          "type": "number"
+        },
+        "bugs": {
+          "type": "number"
+        },
+        "hotspot": {
+          "type": "number"
+        },
+        "code_smells": {
+          "type": "number"
+        },
+        "vulnerabilities": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id_repository",
+        "coverage",
+        "bugs",
+        "hotspot",
+        "code_smells",
+        "vulnerabilities"
+      ]
+    }
+  },
+  "properties": {
+    "data": {
+      "oneOf":[
+        {
+          "$ref": "#/definitions/metrics"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metrics"
+          }
+        }
+      ]
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string"
+    },
+    "count": {
+      "type": "number"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "ok"
+  ]
+}

@@ -1,12 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema",
     "additionalProperties": false,
-    "title": "TribuModel",
+    "title": "TribuCreateRequest",
     "type": "object",
     "properties": {
-        "id_tribu": {
-            "type": "number"
-        },
         "id_organization": {
             "type": "number"
         },
@@ -18,7 +15,6 @@
         }
     },
     "required": [
-        "id_tribu",
         "id_organization",
         "name",
         "status"

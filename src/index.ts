@@ -10,4 +10,4 @@ const port = process.env.PORT;
 
 config(app).listen(port, () => {
   console.info(`Server (localhost:${port}): \x1b[32m%s\x1b[0m`, 'online');
-}); 
+});

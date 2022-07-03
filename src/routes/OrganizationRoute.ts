@@ -7,7 +7,7 @@ import { OrganizationService } from "../service/OrganizationService";
 const router: Router = Router();
 
 router.get("", async (_req: Request, res: Response) => 
-  res.send(await new OrganizationService().getOrganizations())
+  res.send(await new OrganizationService().getAllOrganizations())
 );
 
 router.post(
@@ -31,7 +31,7 @@ router.put(
 );
 
 router.delete(
-  "/:id",
+  "/:id_organization",
   (req: Request, res: Response, next: NextFunction) =>
     validateRequest(req, res, next, {
       path: SchemaEnum.organization_delete_request,

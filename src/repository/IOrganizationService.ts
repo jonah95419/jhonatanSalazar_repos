@@ -1,39 +1,45 @@
 import { OrganizationCreateRequest } from "types/organization_create_request";
-import { OrganizationCreateUpdateResponse } from "types/organization_create_update_response";
-import { OrganizationGetDeleteResponse } from "types/organization_get_delete_response";
+import { OrganizationResponse } from "types/organization_response";
 import { Organization } from "../entities/organization.entity";
 
 export interface IOrganizationService {
   /**
-   * @description Create one organization
+   * @description Create a Organization Item
    * @param organization new item, ommit id_organization
    * @returns a boolean indicated the status
    */
   createOrganization(
     organization: OrganizationCreateRequest
-  ): Promise<OrganizationCreateUpdateResponse>;
+  ): Promise<OrganizationResponse>;
 
   /**
-   * @description Create one organization
+   * @description Update a Organization Item
    * @param organization item to update
    * @returns a boolean indicated the status
    */
   updateOrganization(
     organization: Organization
-  ): Promise<OrganizationCreateUpdateResponse>;
+  ): Promise<OrganizationResponse>;
 
   /**
    * @description Get all Organizations
    * @returns list all Organizations
    */
-  getOrganizations(): Promise<OrganizationGetDeleteResponse>;
+  getAllOrganizations(): Promise<OrganizationResponse>;
 
   /**
-   * @description Create one organization
-   * @param idOrganization item to delete
+   * @description Get item Organization by id_organization
+   * * @param id_organization item to search
+   * @returns Item Organization
+   */
+  getItemOrganization(id_organization: number): Promise<OrganizationResponse>;
+
+  /**
+   * @description Create a Organization Item
+   * @param id_organization item to delete
    * @returns list all Organizations
    */
   deleteOrganization(
-    idOrganization: number
-  ): Promise<OrganizationGetDeleteResponse>;
+    id_organization: number
+  ): Promise<OrganizationResponse>;
 }
