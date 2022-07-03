@@ -1,13 +1,15 @@
 import { Metrics } from "../entities/metrics.entity";
+import { Repository as RepositoryEntity } from "../entities/repository.entity";
 
 import { AppDataSource } from "../config/data-source";
 import { IMetricsService } from "repository/IMetricsService";
 import { RepositoryService } from "./RepositoryService";
 
 import { Repository } from "typeorm";
-import { MessageEnum } from "../constant/MessageEnum";
 import { generateMessageError } from "../utils/CommonFunctions";
 import { MetricsResponse } from "types/metrics_response";
+import { MessageValues } from "../constant/MessagesValues";
+import { RepositoryResponse } from "types/repository_response";
 
 /**
  * MetricsService Implementation
@@ -32,22 +34,22 @@ export class MetricsService implements IMetricsService {
         ok: true,
       };
     } catch (error) {
-      return generateMessageError<MetricsResponse>(error);
+      return generateMessageError(error);
     }
   };
 
   createMetrics = async (metrics: any): Promise<MetricsResponse> => {
     try {
-      const repository: any =
+      const repository: RepositoryResponse =
         await this._repositoryService.getItemRepositoryById(
           metrics.id_repository
         );
 
-      if (!repository.ok) return generateMessageError<MetricsResponse>(repository);
+      if (!repository.ok) throw new Error(repository.message);;
 
       const metricsToSave: Metrics = new Metrics();
 
-      metricsToSave.repository = repository.data;
+      metricsToSave.repository = <RepositoryEntity>repository.data;
       metricsToSave.coverage = metrics.coverage;
       metricsToSave.bugs = metrics.bugs;
       metricsToSave.vulnerabilities = metrics.vulnerabilities;
@@ -58,11 +60,11 @@ export class MetricsService implements IMetricsService {
 
       return {
         data,
-        message: MessageEnum.create_successful,
+        message: MessageValues.CREATE_SUCCESSFUL,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<MetricsResponse>(error);
+      return generateMessageError(error);
     }
   };
 }

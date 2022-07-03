@@ -12,8 +12,8 @@ router.get(
     validateRequest(req, res, next, {
       path: SchemaEnum.tribe_get_request,
     }),
-  async (_req: Request, res: Response) =>
-    res.send(await new RepositoryService().getAllRepositories(1))
+  async (req: Request, res: Response) =>
+    res.send(await new RepositoryService().getAllRepositories(req.body.id_tribe))
 );
 
 router.post(

@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { isEmpty, isNull } from "lodash";
+import { get, isEmpty, isNull } from "lodash";
 
 import { AppDataSource } from "../config/data-source";
 import { ITribeService } from "repository/ITribeService";
@@ -8,11 +8,10 @@ import { OrganizationService } from "./OrganizationService";
 import { Tribe } from "../entities/tribe.entity";
 import { Organization } from "../entities/organization.entity";
 
-import { MessageEnum } from "../constant/MessageEnum";
-import { ErrorMessageEnum, ErrorTypeEnum } from "../constant/ErrorEnum";
-import { generateMessageError, validateItem } from "../utils/CommonFunctions";
+import { generateMessageError } from "../utils/CommonFunctions";
 import { TribeResponse } from "types/tribe_response";
 import { OrganizationResponse } from "types/organization_response";
+import { MessageValues } from "../constant/MessagesValues";
 
 /**
  * TribeService Implementation
@@ -28,87 +27,87 @@ export class TribeService implements ITribeService {
 
   getAllTribesById = async (id_tribe: number): Promise<TribeResponse> => {
     try {
-      const data: Tribe[] = await this._storage.find({
-        where: {id_tribe},
-      });
+      const [data, count]: [Tribe[], number] = await this._storage.findAndCount(
+        { where: { id_tribe }}
+      );
 
       if (isNull(data) || isEmpty(data))
-        throw new Error(ErrorMessageEnum[ErrorTypeEnum.tribe404]);
+        throw new Error(MessageValues.MESSAGE_T404);
 
       return {
         data,
+        count,
         ok: true,
       };
     } catch (error) {
-      return generateMessageError<TribeResponse>(error);
+      return generateMessageError(error);
     }
   };
 
   getItemTribeById = async (id_tribe: number): Promise<TribeResponse> => {
     try {
       const data: Tribe | null = await this._storage.findOneBy({
-        id_tribe
+        id_tribe,
       });
 
       if (isNull(data) || isEmpty(data))
-        throw new Error(ErrorMessageEnum[ErrorTypeEnum.tribe404]);
+        throw new Error(MessageValues.MESSAGE_T404);
 
       return {
         data,
         ok: true,
       };
     } catch (error) {
-      return generateMessageError<TribeResponse>(error);
+      return generateMessageError(error);
     }
   };
 
-  createTribe = async (tribu: any): Promise<TribeResponse> => {
+  createTribe = async (tribe: Tribe): Promise<TribeResponse> => {
     try {
-      const tribuToSave: Tribe = new Tribe();
       const organization: OrganizationResponse =
         await this._organizationService.getItemOrganization(
-          tribu.id_organization
+          get(tribe, "id_organization", "")
         );
 
-      if (!organization.ok)
-        return generateMessageError<TribeResponse>(organization); 
+      if (!organization.ok) throw new Error(organization.message);
 
-      tribuToSave.name = tribu.name;
-      tribuToSave.status = tribu.status;
-      tribuToSave.organization = <Organization>organization.data;
+      const tribeToSave: Tribe = new Tribe();
+      tribeToSave.name = tribe.name;
+      tribeToSave.status = tribe.status;
+      tribeToSave.organization = <Organization>organization.data;
 
-      const data: Tribe = await this._storage.save(tribuToSave);
+      const data: Tribe = await this._storage.save(tribeToSave);
 
       return {
         data,
-        message: MessageEnum.create_successful,
+        message: MessageValues.CREATE_SUCCESSFUL,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<TribeResponse>(error);
+      return generateMessageError(error);
     }
   };
 
   updateTribe = async (tribu: Tribe): Promise<TribeResponse> => {
     try {
-      const tribuToUpdate: Tribe = await validateItem<Tribe>(
-        { id_tribe: tribu.id_tribe },
-        this._storage,
-        ErrorTypeEnum.tribe404
-      );
+      const tribuToUpdate: Tribe | null = await this._storage.findOneBy({
+        id_tribe: tribu.id_tribe,
+      });
+
+      if (isNull(tribuToUpdate)) throw new Error(MessageValues.MESSAGE_T404);
 
       tribuToUpdate.name = tribu.name;
       tribuToUpdate.status = tribu.status;
 
-      const data:Tribe  = await this._storage.save(tribuToUpdate!);
+      const data: Tribe = await this._storage.save(tribuToUpdate!);
 
       return {
         data,
-        message: MessageEnum.update_successful,
+        message: MessageValues.UPDATE_SUCCESSFUL,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<TribeResponse>(error);
+      return generateMessageError(error);
     }
   };
 }

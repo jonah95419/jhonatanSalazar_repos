@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "RepositoryComplete",
+  "type": "object",
+  "definitions": {
+    "organization": {
+      "properties": {
+        "id_organization": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "tribe": {
+      "properties": {
+        "id_tribe": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "organization": {
+          "$ref": "#/definitions/organization"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metrics": {
+      "properties": {
+        "id_organization": {
+          "type": "number"
+        },
+        "coverage": {
+          "type": "number"
+        },
+        "bugs": {
+          "type": "number"
+        },
+        "hotspot": {
+          "type": "number"
+        },
+        "code_smells": {
+          "type": "number"
+        },
+        "vulnerabilities": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "tribe": {
+      "$ref": "#/definitions/tribe"
+    },
+    "metrics": {
+      "$ref": "#/definitions/metrics"
+    },
+    "id_repository": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "create_time": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

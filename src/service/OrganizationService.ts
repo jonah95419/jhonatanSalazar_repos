@@ -1,13 +1,13 @@
 import { Repository } from "typeorm";
+import { isNull } from "lodash";
 
 import { AppDataSource } from "../config/data-source";
 import { IOrganizationService } from "repository/IOrganizationService";
 
-import { MessageEnum } from "../constant/MessageEnum";
-import { ErrorTypeEnum } from "../constant/ErrorEnum";
+import { MessageValues } from "../constant/MessagesValues";
 import { Organization } from "../entities/organization.entity";
 import { OrganizationCreateRequest } from "types/organization_create_request";
-import { generateMessageError, validateItem } from "../utils/CommonFunctions";
+import { generateMessageError } from "../utils/CommonFunctions";
 import { OrganizationResponse } from "types/organization_response";
 
 /**
@@ -33,11 +33,11 @@ export class OrganizationService implements IOrganizationService {
 
       return {
         data,
-        message: MessageEnum.create_successful,
+        message: MessageValues.CREATE_SUCCESSFUL,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<OrganizationResponse>(error);
+      return generateMessageError(error);
     }
   };
 
@@ -45,12 +45,13 @@ export class OrganizationService implements IOrganizationService {
     organization: Organization
   ): Promise<OrganizationResponse> => {
     try {
-      const organizationToUpdate: Organization =
-        await validateItem<Organization>(
-          { id_organization: organization.id_organization },
-          this._storage,
-          ErrorTypeEnum.organization404
-        );
+      const organizationToUpdate: Organization | null =
+        await this._storage.findOneBy({
+          id_organization: organization.id_organization,
+        });
+
+      if (isNull(organizationToUpdate))
+        throw new Error(MessageValues.MESSAGE_O404);
 
       organizationToUpdate.name = organization.name;
       organizationToUpdate.status = organization.status;
@@ -59,11 +60,11 @@ export class OrganizationService implements IOrganizationService {
 
       return {
         data,
-        message: MessageEnum.update_successful,
+        message: MessageValues.UPDATE_SUCCESSFUL,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<OrganizationResponse>(error);
+      return generateMessageError(error);
     }
   };
 
@@ -78,7 +79,7 @@ export class OrganizationService implements IOrganizationService {
         ok: true,
       };
     } catch (error) {
-      return generateMessageError<OrganizationResponse>(error);
+      return generateMessageError(error);
     }
   };
 
@@ -86,18 +87,18 @@ export class OrganizationService implements IOrganizationService {
     id_organization: number
   ): Promise<OrganizationResponse> => {
     try {
-      const data: Organization = await validateItem<Organization>(
-        { id_organization },
-        this._storage,
-        ErrorTypeEnum.organization404
-      );
+      const data: Organization | null = await this._storage.findOneBy({
+        id_organization,
+      });
+
+      if (isNull(data)) throw new Error(MessageValues.MESSAGE_O404);
 
       return {
         data,
         ok: true,
       };
     } catch (error: unknown) {
-      return generateMessageError<OrganizationResponse>(error);
+      return generateMessageError(error);
     }
   };
 
@@ -105,11 +106,12 @@ export class OrganizationService implements IOrganizationService {
     id_organization: number
   ): Promise<OrganizationResponse> => {
     try {
-      const organization: Organization = await validateItem<Organization>(
-        { id_organization },
-        this._storage,
-        ErrorTypeEnum.organization404
-      );
+      const organization: Organization | null = await this._storage.findOneBy({
+        id_organization,
+      });
+
+      if (isNull(organization)) throw new Error(MessageValues.MESSAGE_O404);
+
       await this._storage.remove(organization!);
       const [data, count]: [Organization[], number] =
         await this._storage.findAndCount();
@@ -117,11 +119,11 @@ export class OrganizationService implements IOrganizationService {
       return {
         data,
         count,
-        message: MessageEnum.delete_successful,
+        message: MessageValues.DELETE_SUCCESSFUL,
         ok: true,
       };
     } catch (error) {
-      return generateMessageError<OrganizationResponse>(error);
+      return generateMessageError(error);
     }
   };
 }
