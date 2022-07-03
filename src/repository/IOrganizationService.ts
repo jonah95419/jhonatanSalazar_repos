@@ -1,7 +1,7 @@
 import { OrganizationCreateRequest } from "types/organization_create_request";
 import { OrganizationCreateUpdateResponse } from "types/organization_create_update_response";
 import { OrganizationGetDeleteResponse } from "types/organization_get_delete_response";
-import { OrganizationDTO } from "../entities/organization.entity";
+import { Organization } from "../entities/organization.entity";
 
 export interface IOrganizationService {
   /**
@@ -19,7 +19,7 @@ export interface IOrganizationService {
    * @returns a boolean indicated the status
    */
   updateOrganization(
-    organization: OrganizationDTO
+    organization: Organization
   ): Promise<OrganizationCreateUpdateResponse>;
 
   /**

@@ -21,6 +21,7 @@ export const AppDataSource = new DataSource({
   extra: {
     options: routingId
   },
+  dropSchema: false,
   entities: [path.join(__dirname, "..", "entities", "**", "*.*"), path.join(__dirname, "..", "entities", "*.*")],
   migrations: [path.join(__dirname, "migrations", "*.*")],
 });

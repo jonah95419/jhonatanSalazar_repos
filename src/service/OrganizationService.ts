@@ -6,7 +6,7 @@ import { IOrganizationService } from "repository/IOrganizationService";
 
 import { MessageEnum } from "../constant/MessageEnum";
 import { ErrorMessageEnum, ErrorTypeEnum } from "../constant/ErrorEnum";
-import { OrganizationDTO } from "../entities/organization.entity";
+import { Organization } from "../entities/organization.entity";
 import { OrganizationCreateRequest } from "types/organization_create_request";
 import { OrganizationGetDeleteResponse } from "types/organization_get_delete_response";
 import { OrganizationCreateUpdateResponse } from "types/organization_create_update_response";
@@ -15,17 +15,17 @@ import { OrganizationCreateUpdateResponse } from "types/organization_create_upda
  * OrganizationService Implementation
  */
 export class OrganizationService implements IOrganizationService {
-  private readonly storage: Repository<OrganizationDTO>;
+  private readonly storage: Repository<Organization>;
 
   constructor() {
-    this.storage = AppDataSource.getRepository(OrganizationDTO);
+    this.storage = AppDataSource.getRepository(Organization);
   }
 
   createOrganization = async (
     organization: OrganizationCreateRequest
   ): Promise<OrganizationCreateUpdateResponse> => {
     try {
-      const organizationToSave: OrganizationDTO = new OrganizationDTO();
+      const organizationToSave: Organization = new Organization();
 
       organizationToSave.name = organization.name;
       organizationToSave.status = organization.status;
@@ -45,10 +45,10 @@ export class OrganizationService implements IOrganizationService {
   };
 
   updateOrganization = async (
-    organization: OrganizationDTO
+    organization: Organization
   ): Promise<OrganizationCreateUpdateResponse> => {
     try {
-      const organizationToUpdate: OrganizationDTO =
+      const organizationToUpdate: Organization =
         await this._validateExistOrganization(organization.id);
 
       organizationToUpdate.name = organization.name;
@@ -70,7 +70,7 @@ export class OrganizationService implements IOrganizationService {
 
   getOrganizations = async (): Promise<OrganizationGetDeleteResponse> => {
     try {
-      const [data, count]: [OrganizationDTO[], number] =
+      const [data, count]: [Organization[], number] =
         await this.storage.findAndCount();
 
       return {
@@ -87,11 +87,11 @@ export class OrganizationService implements IOrganizationService {
     id: number
   ): Promise<OrganizationGetDeleteResponse> => {
     try {
-      const organization: OrganizationDTO = await this._validateExistOrganization(
+      const organization: Organization = await this._validateExistOrganization(
         id
       );
       await this.storage.remove(organization!);
-      const [data, count]: [OrganizationDTO[], number] =
+      const [data, count]: [Organization[], number] =
         await this.storage.findAndCount();
 
       return {
@@ -105,8 +105,8 @@ export class OrganizationService implements IOrganizationService {
     }
   };
 
-  private async _validateExistOrganization(id: number): Promise<OrganizationDTO> {
-    const organizationToUpdate: OrganizationDTO | null =
+  private async _validateExistOrganization(id: number): Promise<Organization> {
+    const organizationToUpdate: Organization | null =
       await this.storage.findOneBy({
         id,
       });

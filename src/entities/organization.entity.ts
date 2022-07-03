@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
-export class OrganizationDTO {
+@Entity("Organization")
+export class Organization {
   @PrimaryGeneratedColumn("increment")
   "id": number;
 
