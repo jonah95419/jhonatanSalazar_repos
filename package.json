@@ -7,7 +7,7 @@
     "tsc:interface": "tsc ./json2ts.ts --outDir types && node types/json2ts.js",
     "build": "npx tsc",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
-    "run-dev": "npm run build && npm run dev"
+    "server": "npm run build && npm run dev"
   },
   "repository": {
     "type": "git",
